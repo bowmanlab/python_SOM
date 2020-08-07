@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 """
 Created on Sat Jul  4 12:56:23 2020
@@ -16,11 +17,16 @@ import time
 # and then >pip install matplotlib
 
 def closest_node(temp_data, som, m_rows, m_cols):
-    som_flat = np.reshape(som, (900,6))
+    som_flat = np.reshape(som, (900,6)) 
+    ## som is reshaped again to have 900 rows and 6 columns
     som_dist = np.reshape(np.linalg.norm(som_flat - temp_data, axis=1), (30, 30))
+    ## 30 x 30 array of euclidean distances between a data point and all the points on the som
     min_loc = np.where(som_dist == np.amin(som_dist))
+    ## the coordinates where the euclidean distance from the som to the data point is at a minimum
     min_dist = np.amin(som_dist)
+    ## the minimum euclidean distance
     result = (min_loc[0][0], min_loc[1][0], min_dist)
+    ## I do not understand the result line and why is it hardcoded
     
     ## You are here, also return distance, in the expectation that distance
     ## should be steadily decreasing as the map trains.
@@ -51,6 +57,7 @@ def update_map(j):
 print("\nLoading Iris data into memory \n")
 data_file = "test_AF.training_events.csv"
 data_x = np.loadtxt(data_file, delimiter=",", usecols=range(1,7), skiprows = 1, dtype=np.float64)
+## data_x is raw data
 #data_y = np.loadtxt(data_file, delimiter=",", usecols=[4], dtype=np.int)
 
 # 0. get started
@@ -63,8 +70,11 @@ StepsMax = data_x.shape[1] * present
   
 print("Constructing a 30x30 SOM")
 data_sample = data_x[np.random.choice(data_x.shape[0], size = Rows * Cols, replace = False),:]
+## data_sample - array of 900 elements from 0 to approx. 6065 is generated
 data_xr = data_x[np.random.choice(data_x.shape[0], size = data_x.shape[0], replace = False),:]
+## data_xr - array of approx 6065 elements from 0 to approx 6065 is generated
 som = np.reshape(data_sample, (30, 30, 6))
+## data_sample array is reshaped to have 30 rows, 30 columns, with a depth of 6
 
 old_time = time.time()
 mean_p_dist = []
@@ -90,7 +100,7 @@ for p in range(present):
         p_dist.append(min_dist)
     
     mean_p_dist.append(sum(p_dist) / len(p_dist))
+    print(mean_p_dist[p])
             
 net_time = time.time() - old_time
 print(net_time)
-                
